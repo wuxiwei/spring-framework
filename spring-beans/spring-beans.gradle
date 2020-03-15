@@ -25,6 +25,7 @@ compileGroovy {
 
 // This module also builds Kotlin code and the compileKotlin task naturally depends on
 // compileJava. We need to redefine dependencies to break task cycles.
+// 注意使用的gradle版本，DefaultTaskDependency类有不同的属性immutableValues+mutableValues或values
 def deps = compileGroovy.taskDependencies.immutableValues + compileGroovy.taskDependencies.mutableValues
 compileGroovy.dependsOn = deps - "compileJava"
 compileKotlin.dependsOn(compileGroovy)
