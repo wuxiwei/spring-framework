@@ -70,6 +70,11 @@ import org.springframework.util.StringUtils;
  */
 public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements SingletonBeanRegistry {
 
+	/**
+	 * SingletonBeanRegistry 定义对单例的注册和获取。
+	 * DefaultSingletonBeanRegistry 对SingletonBeanRegistry接口的实现
+	 */
+
 	/** Cache of singleton objects: bean name to bean instance. */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 

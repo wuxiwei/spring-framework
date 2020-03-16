@@ -34,6 +34,10 @@ import org.springframework.lang.Nullable;
 public interface HierarchicalBeanFactory extends BeanFactory {
 
 	/**
+	 * 在BeanFactory的基础上增加对parentFactory的支持。
+	 */
+
+	/**
 	 * Return the parent bean factory, or {@code null} if there is none.
 	 */
 	@Nullable

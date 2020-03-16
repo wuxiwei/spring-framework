@@ -84,6 +84,10 @@ import org.springframework.util.xml.DomUtils;
  */
 public class BeanDefinitionParserDelegate {
 
+	/**
+	 * 定义解析Element的各种方法
+	 */
+
 	public static final String BEANS_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
 
 	public static final String MULTI_VALUE_ATTRIBUTE_DELIMITERS = ",; ";
@@ -437,6 +441,7 @@ public class BeanDefinitionParserDelegate {
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
+				// 如果beanName没有指定名称
 				try {
 					if (containingBean != null) {
 						beanName = BeanDefinitionReaderUtils.generateBeanName(

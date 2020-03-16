@@ -54,6 +54,10 @@ import org.springframework.core.io.Resource;
 @SuppressWarnings({"serial", "all"})
 public class XmlBeanFactory extends DefaultListableBeanFactory {
 
+	/**
+	 * XmlBeanFactory使用了自定义xml解析器XmlBeanDefinitionReader，实现了个性化的BeanDefinitionReader读取。
+ 	 */
+
 	private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
 
 

@@ -48,6 +48,10 @@ import org.springframework.util.Assert;
  */
 public abstract class AbstractBeanDefinitionReader implements BeanDefinitionReader, EnvironmentCapable {
 
+	/**
+	 * 实现BeanDefinitionReader, EnvironmentCapable（获取Environment）
+	 */
+
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 

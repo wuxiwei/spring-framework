@@ -40,6 +40,11 @@ import org.springframework.util.StringValueResolver;
  */
 public class SimpleAliasRegistry implements AliasRegistry {
 
+	/**
+	 * AliasRegistry：定义对Alias的简单增删改操作
+	 * SimpleAliasRegistry：使用map作为对Alias的缓存，并对接口AliasRegistry进行实现。
+	 */
+
 	/** Logger available to subclasses. */
 	protected final Log logger = LogFactory.getLog(getClass());
 

@@ -120,6 +120,10 @@ import org.springframework.util.StringUtils;
 public class DefaultListableBeanFactory extends AbstractAutowireCapableBeanFactory
 		implements ConfigurableListableBeanFactory, BeanDefinitionRegistry, Serializable {
 
+	/**
+	 * DefaultListableBeanFactory是整个bean加载的核心部分，是Spring注册和加载bean的默认实现。
+	 */
+
 	@Nullable
 	private static Class<?> javaxInjectProviderClass;
 

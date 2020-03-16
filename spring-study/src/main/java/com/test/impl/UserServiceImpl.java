@@ -1,5 +1,6 @@
-package com.test;
+package com.test.impl;
 
+import com.test.api.UserService;
 import org.springframework.stereotype.Service;
 
 /**
