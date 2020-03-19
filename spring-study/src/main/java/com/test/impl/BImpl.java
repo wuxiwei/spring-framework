@@ -5,7 +5,7 @@ import com.test.api.B;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("b")
 public class BImpl implements B {
 
 	@Autowired
@@ -15,4 +15,5 @@ public class BImpl implements B {
 	public String get() {
 		return "B Service: " + a.get();
 	}
+
 }

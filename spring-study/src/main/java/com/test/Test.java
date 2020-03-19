@@ -2,11 +2,15 @@ package com.test;
 
 import com.test.api.A;
 import com.test.api.B;
+import com.test.impl.AImpl;
+import com.test.impl.BImpl;
 import com.test.impl.UserServiceImpl;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
 /**
@@ -24,9 +28,14 @@ public class Test {
 		XmlBeanFactory bf = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
 		A a = (A) bf.getBean("a");
 		B b = (B) bf.getBean("b");
-
 		System.out.println(a.get());
 		System.out.println(b.get());
+
+//		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+//		System.out.println(context.getBean("a", AImpl.class).get());
+//		System.out.println(context.getBean("b", BImpl.class).get());
+
+
 
 
 	}
