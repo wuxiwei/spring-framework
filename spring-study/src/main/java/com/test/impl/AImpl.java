@@ -11,9 +11,13 @@ public class AImpl implements A {
 	@Autowired
 	private B b;
 
+	String test;
+
 	@Override
 	public String get() {
 		return "A Service: " + b.get();
 	}
+
+
 
 }

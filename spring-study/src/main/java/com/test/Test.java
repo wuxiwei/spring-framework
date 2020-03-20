@@ -4,6 +4,7 @@ import com.test.api.A;
 import com.test.api.B;
 import com.test.impl.AImpl;
 import com.test.impl.BImpl;
+import com.test.impl.StudentA;
 import com.test.impl.UserServiceImpl;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
@@ -22,14 +23,20 @@ public class Test {
 
 	public static void main(String[] args) {
 //		AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(Test.class);
-//		UserServiceImpl bean = context.getBean(UserServiceImpl.class);
-//		System.out.println(bean.hello());
+//		AImpl a = context.getBean(AImpl.class);
+//		BImpl b = context.getBean(BImpl.class);
+//		System.out.println(a.get());
+//		System.out.println(b.get());
 
 		XmlBeanFactory bf = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
 		A a = (A) bf.getBean("a");
 		B b = (B) bf.getBean("b");
 		System.out.println(a.get());
 		System.out.println(b.get());
+
+//		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+//		System.out.println(context.getBean("a", StudentA.class));
+
 
 //		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 //		System.out.println(context.getBean("a", AImpl.class).get());
