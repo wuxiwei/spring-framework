@@ -28,7 +28,10 @@ public class Test {
 //		System.out.println(a.get());
 //		System.out.println(b.get());
 
-		XmlBeanFactory bf = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+//		XmlBeanFactory bf = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
+		ApplicationContext bf = new ClassPathXmlApplicationContext("applicationContext.xml");
+//		bf.refresh();
+
 		A a = (A) bf.getBean("a");
 		B b = (B) bf.getBean("b");
 		System.out.println(a.get());

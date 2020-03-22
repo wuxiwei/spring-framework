@@ -127,6 +127,8 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 			closeBeanFactory();
 		}
 		try {
+			// BeanFactory bf = new XmlBeanFactory("beanFactoryTest.xml");
+			// XmlBeanFactory 继承自DefaultListableBeanFactory，并且提供了XmlBeanDefinitionReader类型的reader属性
 			DefaultListableBeanFactory beanFactory = createBeanFactory();
 			beanFactory.setSerializationId(getId());
 			customizeBeanFactory(beanFactory);
@@ -223,9 +225,12 @@ public abstract class AbstractRefreshableApplicationContext extends AbstractAppl
 	 */
 	protected void customizeBeanFactory(DefaultListableBeanFactory beanFactory) {
 		if (this.allowBeanDefinitionOverriding != null) {
+			// 是否允许覆盖同名称的不同定义的对象
+			// 通过之类覆盖
 			beanFactory.setAllowBeanDefinitionOverriding(this.allowBeanDefinitionOverriding);
 		}
 		if (this.allowCircularReferences != null) {
+			// 是否允许bean之间存在依赖
 			beanFactory.setAllowCircularReferences(this.allowCircularReferences);
 		}
 	}

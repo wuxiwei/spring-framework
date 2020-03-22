@@ -1157,6 +1157,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 	 */
 	protected void initBeanWrapper(BeanWrapper bw) {
 		bw.setConversionService(getConversionService());
+		// 注册通用属性编辑器
 		registerCustomEditors(bw);
 	}
 
@@ -1472,6 +1473,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			return value;
 		}
 
+		// 处理解析SpEL，该步骤是在解析依赖注入bean的时候，以及在完成bean的初始化和属性获取后进行属性填充的时候。
 		Scope scope = null;
 		if (beanDefinition != null) {
 			String scopeName = beanDefinition.getScope();
@@ -1479,6 +1481,7 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 				scope = getRegisteredScope(scopeName);
 			}
 		}
+		// 在ApplicationContext初始化的时候设置了
 		return this.beanExpressionResolver.evaluate(value, new BeanExpressionContext(this, scope));
 	}
 
