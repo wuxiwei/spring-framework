@@ -12,8 +12,12 @@ public class BImpl implements B {
 	private A a;
 
 	@Override
-	public String get() {
-		return "B Service: " + a.get();
+	public String bget() {
+		return "B Service: " + a.toString();
+	}
+
+	public String toString() {
+		return "B ServiceString";
 	}
 
 }

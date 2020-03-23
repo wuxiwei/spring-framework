@@ -30,12 +30,11 @@ public class Test {
 
 //		XmlBeanFactory bf = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
 		ApplicationContext bf = new ClassPathXmlApplicationContext("applicationContext.xml");
-//		bf.refresh();
 
 		A a = (A) bf.getBean("a");
 		B b = (B) bf.getBean("b");
-		System.out.println(a.get());
-		System.out.println(b.get());
+		System.out.println(a.aget());
+		System.out.println(b.bget());
 
 //		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 //		System.out.println(context.getBean("a", StudentA.class));
