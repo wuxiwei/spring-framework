@@ -292,7 +292,9 @@ public abstract class AbstractBeanFactory extends FactoryBeanRegistrySupport imp
 			}
 
 			try {
-				// 如果指定BeanName是子bean的话同时合并父类的相关属性
+				// 因为从 XML 配置文件中读取到的 bean 信息是存储在 GernericBeanDefinition 中的，
+				// 但是所 有的 bean 后续处理都是针对于 RootBeanDefinition 的，所以这里需要进行一个转换，
+				// 转换的同时 如果父类 bean 不为空的话，则会一并合并父类的属性。
 				final RootBeanDefinition mbd = getMergedLocalBeanDefinition(beanName);
 				checkMergedBeanDefinition(mbd, beanName, args);
 

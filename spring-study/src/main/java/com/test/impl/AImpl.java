@@ -11,11 +11,13 @@ public class AImpl implements A {
 	@Autowired
 	private B b;
 
-	String test;
-
 	@Override
-	public String get() {
-		return "A Service: " + b.get();
+	public String aget() {
+		return "A Service: " + b.toString();
+	}
+
+	public String toString() {
+		return "A ServiceString";
 	}
 
 
