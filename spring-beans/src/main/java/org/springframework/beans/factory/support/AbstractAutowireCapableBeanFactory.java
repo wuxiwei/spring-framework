@@ -956,6 +956,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 	 * @return the object to expose as bean reference
 	 */
 	protected Object getEarlyBeanReference(String beanName, RootBeanDefinition mbd, Object bean) {
+		System.out.println("spring bean 创建过程-----------getEarlyBeanReference--------------beanName: " + beanName);
 		Object exposedObject = bean;
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			// 对bean依赖引用，AOP就是在这里将advice动态织入bean中
