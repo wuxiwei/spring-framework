@@ -560,7 +560,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			// 根据指定bean使用对应的策略创建新的实例，工厂方法、构造函数注入、简单初始化
 			// 如果存在工厂方法则使用工厂方法进行初始化。
 			// 一个类有多个构造函数，每个构造函数都有不同的参数，所以需要根据参数锁定构造 函数并进行初始化。
-			// 如果既不存在工厂方法也不存在带有参数的构造函数，则使用默认的构造函数进行 bean 的实例f匕
+			// 如果既不存在工厂方法也不存在带有参数的构造函数，则使用默认的构造函数进行 bean 的实例化
 			instanceWrapper = createBeanInstance(beanName, mbd, args);
 		}
 		final Object bean = instanceWrapper.getWrappedInstance();
@@ -1177,6 +1177,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		if (mbd.getFactoryMethodName() != null) {
 			// 如果工厂方法不为空
+			// @bean或factory-method
 			return instantiateUsingFactoryMethod(beanName, mbd, args);
 		}
 
@@ -1191,6 +1192,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 				}
 			}
 		}
+		// 如果已经解析过则直接使用解析好的构造函数方法
 		if (resolved) {
 			if (autowireNecessary) {
 				// 构造函数自动注入
@@ -1211,6 +1213,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		}
 
 		// Preferred constructors for default construction?
+		// 默认构造函数参数
 		ctors = mbd.getPreferredConstructors();
 		if (ctors != null) {
 			return autowireConstructor(beanName, mbd, ctors, null);
@@ -1389,6 +1392,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Give any InstantiationAwareBeanPostProcessors the opportunity to modify the
 		// state of the bean before properties are set. This can be used, for example,
 		// to support styles of field injection.
+		// 可以用来支持属性注入的类型
 		if (!mbd.isSynthetic() && hasInstantiationAwareBeanPostProcessors()) {
 			for (BeanPostProcessor bp : getBeanPostProcessors()) {
 				if (bp instanceof InstantiationAwareBeanPostProcessor) {
@@ -1452,6 +1456,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 
 		if (pvs != null) {
 			// 增加SpEL语言的支持，
+			// 获取的属性是以PropertyValues 形式存在的，还并没有应用到已经实例化的 bean 中 ， 这一工作是在 applyProperty Values 中。
 			applyPropertyValues(beanName, mbd, bw, pvs);
 		}
 	}
@@ -1696,6 +1701,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		// Create a deep copy, resolving any references for values.
 		List<PropertyValue> deepCopy = new ArrayList<>(original.size());
 		boolean resolveNecessary = false;
+		// 遍历属性，将属性转换为对应类的对应属性的类型
 		for (PropertyValue pv : original) {
 			if (pv.isConverted()) {
 				deepCopy.add(pv);
@@ -1788,6 +1794,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 			}, getAccessControlContext());
 		}
 		else {
+			// 对特殊的 bean 处理： Aware 、 BeanClassLoaderAware 、 BeanFactoryAware
 			invokeAwareMethods(beanName, bean);
 		}
 
