@@ -1,5 +1,6 @@
 package com.test;
 
+import com.test.aop.TestBean;
 import com.test.api.A;
 import com.test.api.B;
 import com.test.impl.AImpl;
@@ -33,8 +34,10 @@ public class Test {
 
 		A a = (A) bf.getBean("a");
 		B b = (B) bf.getBean("b");
-		System.out.println(a.aget());
-		System.out.println(b.bget());
+		TestBean testBean = (TestBean) bf.getBean("testBean");
+		testBean.test();
+//		System.out.println(a.aget());
+//		System.out.println(b.bget());
 
 //		ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
 //		System.out.println(context.getBean("a", StudentA.class));
