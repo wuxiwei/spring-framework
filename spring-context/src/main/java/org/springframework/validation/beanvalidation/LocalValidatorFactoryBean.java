@@ -166,7 +166,7 @@ public class LocalValidatorFactoryBean extends SpringValidatorAdapter
 	 * @see ResourceBundleMessageInterpolator
 	 */
 	public void setValidationMessageSource(MessageSource messageSource) {
-		this.messageInterpolator = HibernateValidatorDelegate.buildMessageInterpolator(messageSource);
+//		this.messageInterpolator = HibernateValidatorDelegate.buildMessageInterpolator(messageSource);
 	}
 
 	/**
@@ -430,11 +430,11 @@ public class LocalValidatorFactoryBean extends SpringValidatorAdapter
 	/**
 	 * Inner class to avoid a hard-coded Hibernate Validator dependency.
 	 */
-	private static class HibernateValidatorDelegate {
-
-		public static MessageInterpolator buildMessageInterpolator(MessageSource messageSource) {
-			return new ResourceBundleMessageInterpolator(new MessageSourceResourceBundleLocator(messageSource));
-		}
-	}
+//	private static class HibernateValidatorDelegate {
+//
+//		public static MessageInterpolator buildMessageInterpolator(MessageSource messageSource) {
+//			return new ResourceBundleMessageInterpolator(new MessageSourceResourceBundleLocator(messageSource));
+//		}
+//	}
 
 }
