@@ -27,6 +27,7 @@ public class AspectJTest {
 //		System.out.println("afterTest");
 //	}
 
+	// 注意：测试环绕增强的时候，要和其他增强分开测试，否则会报异常
 	@Around("aspectJTest()")
 	public Object aroundTest(ProceedingJoinPoint point) {
 		System.out.println("before1");
