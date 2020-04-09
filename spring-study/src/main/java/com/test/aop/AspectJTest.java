@@ -22,10 +22,10 @@ public class AspectJTest {
 		System.out.println("beforeTest");
 	}
 
-//	@After("aspectJTest()")
-//	public void afterTest() {
-//		System.out.println("afterTest");
-//	}
+	@After("aspectJTest()")
+	public void afterTest() {
+		System.out.println("afterTest");
+	}
 
 	// 注意：测试环绕增强的时候，要和其他增强分开测试，否则会报异常
 	@Around("aspectJTest()")
