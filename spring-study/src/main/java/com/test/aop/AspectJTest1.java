@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
  */
 @Aspect
 @Service
-@Order(2)
-public class AspectJTest {
+@Order(1)
+public class AspectJTest1 {
 
 	@Pointcut("execution(* *.test(..))")
 	public void aspectJTest() {
@@ -21,25 +21,25 @@ public class AspectJTest {
 
 	@Before("aspectJTest()")
 	public void beforeTest() {
-		System.out.println("AspectJTest--->beforeTest");
+		System.out.println("AspectJTest1--->beforeTest1");
 	}
 
 	@After("aspectJTest()")
 	public void afterTest() {
-		System.out.println("AspectJTest--->afterTest");
+		System.out.println("AspectJTest1--->afterTest1");
 	}
 
-	// 注意Ajc：测试环绕增强的时候，要和其他增强分开测试，否则会报异常
+	// 注意：测试环绕增强的时候，要和其他增强分开测试，否则会报异常
 	@Around("aspectJTest()")
 	public Object aroundTest(ProceedingJoinPoint point) {
-		System.out.println("AspectJTest--->before");
+		System.out.println("AspectJTest1--->before1");
 		Object o = null;
 		try {
 			o = point.proceed();
 		} catch (Throwable throwable) {
 			throwable.printStackTrace();
 		}
-		System.out.println("AspectJTest--->after");
+		System.out.println("AspectJTest1--->after1");
 		return o;
 	}
 

@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
  * @author wuxw
  * @since 2020/3/31
  */
-@Service
-public class TestBean {
+@Service("testBean")
+public class TestBean implements ITestBean {
 
 	private String testStr = "testStr";
 

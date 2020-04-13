@@ -80,6 +80,7 @@ class AspectJPrecedenceComparator implements Comparator<Advisor> {
 	public int compare(Advisor o1, Advisor o2) {
 		int advisorPrecedence = this.advisorComparator.compare(o1, o2);
 		if (advisorPrecedence == SAME_PRECEDENCE && declaredInSameAspect(o1, o2)) {
+			// 如果是同一个Aspect处理
 			advisorPrecedence = comparePrecedenceWithinAspect(o1, o2);
 		}
 		return advisorPrecedence;
