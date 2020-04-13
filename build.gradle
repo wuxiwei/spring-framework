@@ -94,7 +94,7 @@ configure(allprojects) { project ->
 
 	compileJava.options*.compilerArgs = commonCompilerArgs +
 			["-Xlint:varargs", "-Xlint:fallthrough", "-Xlint:rawtypes",
-			 "-Xlint:deprecation", "-Xlint:unchecked", "-Werror"]
+			 "-Xlint:deprecation", "-Xlint:unchecked"]
 
 	compileTestJava.options*.compilerArgs = commonCompilerArgs +
 			["-Xlint:-varargs", "-Xlint:-fallthrough", "-Xlint:-rawtypes",
@@ -244,8 +244,8 @@ configure(subprojects - project(":spring-build-src")) { subproject ->
 	}
 
 	artifacts {
-		archives sourcesJar
-		archives javadocJar
+//		archives sourcesJar
+//		archives javadocJar
 	}
 }
 
@@ -285,9 +285,9 @@ configure(rootProject) {
 	}
 
 	artifacts {
-		archives docsZip
-		archives schemaZip
-		archives distZip
+//		archives docsZip
+//		archives schemaZip
+//		archives distZip
 	}
 
 	wrapper {

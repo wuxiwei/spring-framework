@@ -78,9 +78,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	/** Cache of singleton objects: bean name to bean instance. */
 	private final Map<String, Object> singletonObjects = new ConcurrentHashMap<>(256);
 
-	/** Cache of singleton factories: bean name to ObjectFactory. */
-	/** 这个二级缓存 是一个bean工厂，可以生产bean（循环依赖aop--通过cglib代理产生一个新的类，问题等可以在这里实现），
-	 如果二级缓存直接是一个bean 的话，很多需要对bean 的加工都不能实现，这里对aop的实现是通过一个后置处理器AnnotationAwareAspectJAutoProxyCreator */
+	/** Cache of singleton factories: bean name to ObjectFactory.
+	 * 这个二级缓存 是一个bean工厂，可以生产bean（循环依赖aop--通过cglib代理产生一个新的类，问题等可以在这里实现），
+	 * 	 如果二级缓存直接是一个bean 的话，很多需要对bean 的加工都不能实现，这里对aop的实现是通过一个后置处理器AnnotationAwareAspectJAutoProxyCreator*/
 	private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(16);
 
 	/** Cache of early singleton objects: bean name to bean instance. */

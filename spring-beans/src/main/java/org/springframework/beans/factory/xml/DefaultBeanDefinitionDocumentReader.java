@@ -55,12 +55,9 @@ import org.springframework.util.StringUtils;
  * @author Rob Harrop
  * @author Erik Wiersma
  * @since 18.12.2003
+ * 实现读取Document并注册BeanDefinition功能
  */
 public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocumentReader {
-
-	/**
-	 * 实现读取Document并注册BeanDefinition功能
-	 */
 
 	public static final String BEAN_ELEMENT = BeanDefinitionParserDelegate.BEAN_ELEMENT;
 

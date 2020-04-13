@@ -81,12 +81,9 @@ import org.springframework.util.xml.DomUtils;
  * @since 2.0
  * @see ParserContext
  * @see DefaultBeanDefinitionDocumentReader
+ * 定义解析Element的各种方法
  */
 public class BeanDefinitionParserDelegate {
-
-	/**
-	 * 定义解析Element的各种方法
-	 */
 
 	public static final String BEANS_NAMESPACE_URI = "http://www.springframework.org/schema/beans";
 

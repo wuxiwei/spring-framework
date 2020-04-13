@@ -49,14 +49,11 @@ import org.springframework.core.io.Resource;
  * @see XmlBeanDefinitionReader
  * @deprecated as of Spring 3.1 in favor of {@link DefaultListableBeanFactory} and
  * {@link XmlBeanDefinitionReader}
+ * XmlBeanFactory使用了自定义xml解析器XmlBeanDefinitionReader，实现了个性化的BeanDefinitionReader读取。
  */
 @Deprecated
 @SuppressWarnings({"serial", "all"})
 public class XmlBeanFactory extends DefaultListableBeanFactory {
-
-	/**
-	 * XmlBeanFactory使用了自定义xml解析器XmlBeanDefinitionReader，实现了个性化的BeanDefinitionReader读取。
- 	 */
 
 	private final XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader(this);
 
