@@ -1,5 +1,6 @@
 package com.test;
 
+import com.test.aop.ITestBean;
 import com.test.aop.TestBean;
 import com.test.api.A;
 import com.test.api.B;
@@ -34,7 +35,7 @@ public class Test {
 
 		A a = (A) bf.getBean("a");
 		B b = (B) bf.getBean("b");
-		TestBean testBean = (TestBean) bf.getBean("testBean");
+		ITestBean testBean = (ITestBean) bf.getBean("testBean");
 		testBean.test();
 //		System.out.println(a.aget());
 //		System.out.println(b.bget());
