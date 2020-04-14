@@ -91,6 +91,8 @@ class AspectJPrecedenceComparator implements Comparator<Advisor> {
 				(AspectJAopUtils.isAfterAdvice(advisor1) || AspectJAopUtils.isAfterAdvice(advisor2));
 		int adviceDeclarationOrderDelta = getAspectDeclarationOrder(advisor1) - getAspectDeclarationOrder(advisor2);
 
+//		有After,从大到小。
+//		没有After,从小到大。
 		if (oneOrOtherIsAfterAdvice) {
 			// the advice declared last has higher precedence
 			if (adviceDeclarationOrderDelta < 0) {

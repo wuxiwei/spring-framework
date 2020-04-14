@@ -8,6 +8,8 @@ import com.test.impl.AImpl;
 import com.test.impl.BImpl;
 import com.test.impl.StudentA;
 import com.test.impl.UserServiceImpl;
+import com.test.jdbc.BookService;
+import com.test.jdbc.Books;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -15,6 +17,9 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author wuxiwei
@@ -49,7 +54,9 @@ public class Test {
 //		System.out.println(context.getBean("b", BImpl.class).get());
 
 
-
+		BookService bookService = (BookService) bf.getBean("bookService");
+		bookService.save(new Books(1, "1", "1", new Date()));
+//		List<Books> books = bookService.getBooks();
 
 	}
 
