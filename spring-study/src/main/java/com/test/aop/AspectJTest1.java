@@ -24,7 +24,7 @@ public class AspectJTest1 {
 		System.out.println("AspectJTest1--->beforeTest1");
 	}
 
-	@After("aspectJTest()")
+//	@After("aspectJTest()")
 	public void afterTest() {
 		System.out.println("AspectJTest1--->afterTest1");
 	}

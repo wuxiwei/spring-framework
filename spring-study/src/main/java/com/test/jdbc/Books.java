@@ -23,6 +23,16 @@ public class Books {
 		this.date = date;
 	}
 
+	@Override
+	public String toString() {
+		return "Books{" +
+				"id=" + id +
+				", title='" + title + '\'' +
+				", author='" + author + '\'' +
+				", date=" + date +
+				'}';
+	}
+
 	public Integer getId() {
 		return id;
 	}

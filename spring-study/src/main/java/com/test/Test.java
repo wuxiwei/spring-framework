@@ -55,8 +55,9 @@ public class Test {
 
 
 		BookService bookService = (BookService) bf.getBean("bookService");
-		bookService.save(new Books(1, "1", "1", new Date()));
-//		List<Books> books = bookService.getBooks();
+//		bookService.save(new Books(1, "1", "1", new Date()));
+		List<Books> books = bookService.getBooks();
+		System.out.println(books);
 
 	}
 

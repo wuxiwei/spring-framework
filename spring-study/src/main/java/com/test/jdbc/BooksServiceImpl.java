@@ -20,7 +20,7 @@ public class BooksServiceImpl implements BookService {
 
 	@Override
 	public void save(Books books) {
-		jdbcTemplate.update("insert into books(id, title, author, date) values (?, ?, ?)",
+		jdbcTemplate.update("insert into books(id, title, author, date) values (?, ?, ?, ?)",
 				new Object[] {books.getId(), books.getTitle(), books.getAuthor(), books.getDate()},
 				new int[] {Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.DATE});
 	}
