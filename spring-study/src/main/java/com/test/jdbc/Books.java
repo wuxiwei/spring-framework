@@ -1,6 +1,6 @@
 package com.test.jdbc;
 
-import java.util.Date;
+import java.sql.Date;
 
 /**
  * @author wuxw

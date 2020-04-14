@@ -101,6 +101,7 @@ public abstract class DataSourceUtils {
 	public static Connection doGetConnection(DataSource dataSource) throws SQLException {
 		Assert.notNull(dataSource, "No DataSource specified");
 
+		// Spring 主要考虑的是关于事务方面的处理。 基于事务处理的特殊性， Spring 需要保证线程中的数据库操作都是使用同一个事务连接。
 		ConnectionHolder conHolder = (ConnectionHolder) TransactionSynchronizationManager.getResource(dataSource);
 		if (conHolder != null && (conHolder.hasConnection() || conHolder.isSynchronizedWithTransaction())) {
 			conHolder.requested();
@@ -115,10 +116,12 @@ public abstract class DataSourceUtils {
 		logger.debug("Fetching JDBC Connection from DataSource");
 		Connection con = fetchConnection(dataSource);
 
+		// 当前线程支持同步
 		if (TransactionSynchronizationManager.isSynchronizationActive()) {
 			try {
 				// Use same Connection for further JDBC actions within the transaction.
 				// Thread-bound object will get removed by synchronization at transaction completion.
+				// 在事务中使用同一数据库连接
 				ConnectionHolder holderToUse = conHolder;
 				if (holderToUse == null) {
 					holderToUse = new ConnectionHolder(con);
@@ -126,6 +129,7 @@ public abstract class DataSourceUtils {
 				else {
 					holderToUse.setConnection(con);
 				}
+				// 记录数据库连接
 				holderToUse.requested();
 				TransactionSynchronizationManager.registerSynchronization(
 						new ConnectionSynchronization(holderToUse, dataSource));
@@ -340,6 +344,7 @@ public abstract class DataSourceUtils {
 			ConnectionHolder conHolder = (ConnectionHolder) TransactionSynchronizationManager.getResource(dataSource);
 			if (conHolder != null && connectionEquals(conHolder, con)) {
 				// It's the transactional Connection: Don't close it.
+				// 数据库的连接释放并不是直接调用了 Connection 的 API 中的 close 方法。考虑到存在事务 的情况，如果当前线程存在事务，那么说明在当前线程中存在共用数据库连接，这种情况下直 接使用 ConnectionHolder 中的 released 方法进行连接数减一， 而不是真正的释放连接。
 				conHolder.released();
 				return;
 			}

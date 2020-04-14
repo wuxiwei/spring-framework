@@ -365,6 +365,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 
 	@Override
 	@Nullable
+	// query查询
 	public <T> T execute(StatementCallback<T> action) throws DataAccessException {
 		Assert.notNull(action, "Callback object must not be null");
 
@@ -436,7 +437,9 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 			public T doInStatement(Statement stmt) throws SQLException {
 				ResultSet rs = null;
 				try {
+					// 执行查询操作
 					rs = stmt.executeQuery(sql);
+					// 负责将结果进行封装并转换至 POJO，根据RowMapper处理
 					return rse.extractData(rs);
 				}
 				finally {
@@ -609,16 +612,20 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 			logger.debug("Executing prepared SQL statement" + (sql != null ? " [" + sql + "]" : ""));
 		}
 
+		// 获取数据库连接
 		Connection con = DataSourceUtils.getConnection(obtainDataSource());
 		PreparedStatement ps = null;
 		try {
 			ps = psc.createPreparedStatement(con);
+			// 应用用户设定的输入参数
 			applyStatementSettings(ps);
+			// 调用回调函数
 			T result = action.doInPreparedStatement(ps);
 			handleWarnings(ps);
 			return result;
 		}
 		catch (SQLException ex) {
+			// 释放数据库连接避免当异常转换器没有被初始化的时候出现潜在的连接池死锁
 			// Release Connection early, to avoid potential connection pool deadlock
 			// in the case when the exception translator hasn't been initialized yet.
 			if (psc instanceof ParameterDisposer) {
@@ -628,6 +635,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 			psc = null;
 			JdbcUtils.closeStatement(ps);
 			ps = null;
+			// 数据库的连接释放并不是直接调用了 Connection 的 API 中的 close 方法。考虑到存在事务 的情况，如果当前线程存在事务，那么说明在当前线程中存在共用数据库连接，这种情况下直 接使用 ConnectionHolder 中的 released 方法进行连接数减一， 而不是真正的释放连接。
 			DataSourceUtils.releaseConnection(con, getDataSource());
 			con = null;
 			throw translateException("PreparedStatementCallback", sql, ex);
@@ -862,8 +870,10 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 		return updateCount(execute(psc, ps -> {
 			try {
 				if (pss != null) {
+					// 把pss参数往ps参数设置
 					pss.setValues(ps);
 				}
+				// 执行更新操作
 				int rows = ps.executeUpdate();
 				if (logger.isTraceEnabled()) {
 					logger.trace("SQL update affected " + rows + " rows");
@@ -914,11 +924,13 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 
 	@Override
 	public int update(String sql, @Nullable PreparedStatementSetter pss) throws DataAccessException {
+		// 对sql语句进行封装
 		return update(new SimplePreparedStatementCreator(sql), pss);
 	}
 
 	@Override
 	public int update(String sql, Object[] args, int[] argTypes) throws DataAccessException {
+		// 对参数与参数类型进行封装
 		return update(sql, newArgTypePreparedStatementSetter(args, argTypes));
 	}
 
@@ -1359,6 +1371,8 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 	 * @see #setMaxRows
 	 * @see #setQueryTimeout
 	 * @see org.springframework.jdbc.datasource.DataSourceUtils#applyTransactionTimeout
+	 *
+	 * setFetchSize 最主要是为了减少网络交互次数设计的。 访问 ResultSet 时，如果它每次只从 服务器上读取一行数据，则会产生大量的开销。setFetchSize 的意思是当调用 rs.next 时，ResultSet 会一次性从服务器上取得多少行数据回来，这样在下次 rs.next 时， 它可以直接从内存中获取数 据而不需要网络交互， 提高了效率。 这个设置可能会被某些 JDBC 驱动忽略，而且设置过大 也会造成内存的上升。
 	 */
 	protected void applyStatementSettings(Statement stmt) throws SQLException {
 		int fetchSize = getFetchSize();
@@ -1403,6 +1417,7 @@ public class JdbcTemplate extends JdbcAccessor implements JdbcOperations {
 	 * @see org.springframework.jdbc.SQLWarningException
 	 */
 	protected void handleWarnings(Statement stmt) throws SQLException {
+		// 当设置为忽略警告时只尝试打印日志
 		if (isIgnoreWarnings()) {
 			if (logger.isDebugEnabled()) {
 				SQLWarning warningToLog = stmt.getWarnings();
