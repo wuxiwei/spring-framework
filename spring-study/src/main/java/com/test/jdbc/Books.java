@@ -23,6 +23,10 @@ public class Books {
 		this.date = date;
 	}
 
+	public Books() {
+		super();
+	}
+
 	@Override
 	public String toString() {
 		return "Books{" +

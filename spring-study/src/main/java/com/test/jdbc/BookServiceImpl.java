@@ -12,7 +12,7 @@ import java.util.List;
  * @author wuxw
  * @since 2020/4/14
  */
-public class BooksServiceImpl implements BookService {
+public class BookServiceImpl implements BookService {
 
 	private JdbcTemplate jdbcTemplate;
 
@@ -25,20 +25,19 @@ public class BooksServiceImpl implements BookService {
 		// 如果是原生的处理方式
 //		try {
 //			assert jdbcTemplate.getDataSource() != null;
-//			PreparedStatement update = jdbcTemplate.getDataSource().getConnection().prepareStatement("insert into books(id, title, author, date) values (?, ?, ?, ?)");
-//			update.setInt(1, books.getId());
-//			update.setString(2, books.getTitle());
-//			update.setString(3, books.getAuthor());
-//			update.setDate(4, books.getDate());
+//			PreparedStatement update = jdbcTemplate.getDataSource().getConnection().prepareStatement("insert into books(title, author, date) values (?, ?, ?)");
+//			update.setString(1, books.getTitle());
+//			update.setString(2, books.getAuthor());
+//			update.setDate(3, books.getDate());
 //			update.executeUpdate();
 //		} catch (SQLException e) {
 //			e.printStackTrace();
 //		}
 
 		// spring处理方式,会把参数自动设置
-		jdbcTemplate.update("insert into books(id, title, author, date) values (?, ?, ?, ?)",
-				new Object[] {books.getId(), books.getTitle(), books.getAuthor(), books.getDate()},
-				new int[] {Types.INTEGER, Types.VARCHAR, Types.VARCHAR, Types.DATE});
+		jdbcTemplate.update("insert into books(title, author, date) values (?, ?, ?)",
+				new Object[] {books.getTitle(), books.getAuthor(), books.getDate()},
+				new int[] {Types.VARCHAR, Types.VARCHAR, Types.DATE});
 	}
 
 	@Override
