@@ -1,5 +1,6 @@
-package com.test.jdbc;
+package com.test.jdbc.mapper;
 
+import com.test.jdbc.Books;
 import org.apache.ibatis.annotations.Param;
 
 public interface BookMapper {

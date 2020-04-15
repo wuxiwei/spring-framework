@@ -10,14 +10,68 @@
 		<property name="password" value="Wfd-12345" />
 	</bean>
 
+	<!--SqlSessionFactoryBean封装了Mybatis中的实现-->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="dataSource"/>
+		<!--以下配置，也可用单独通过属性设置-->
 		<property name="configLocation" value="mybatis-location.xml"/>
 	</bean>
 
+	<!--org.mybatis.spring.mapper.MapperFactoryBean.checkDaoConfig-->
+	<!--对于函数前半部分的验证我们都很容易理解 ，无非是对配置文件中的属性是否存在做验证，但是后面部分是完成了什么方面的验证呢？-->
+	<!--如果读者读过 MyBatis 源码，你就会知 道，在 MyBatis 实现过程中并没有于动调用 configuration.addMapper 方法，-->
+	<!--而是在映射文件 读取过程中一旦解析到如<mapper namespace="Mapper.BookMapper">,便会自动进行类型映 射的注册。-->
+	<!--那么,Spring 中为什么会把这个功能单独拿出来放在验证里呢？这是不是多此 一举呢？-->
+	<!--在上面的函数中， configuration.addMapper(this.mapperInterface）其实就是将 UserMapper 注 册到映射类型中，-->
+	<!--如果你可以保证这个接口一定存在对应的映射文件，那么其实这个验证并没 有必要。-->
+	<!--但是，由于这个是我们自行决定的配置，无法保证这里配置的接口一定存在对应的映 射文件，所以这里非常有必要进行验证。-->
+	<!--在执行此代码的时候， MyBatis 会检查嵌入的映射接口是否存在对应的映射文件，如果没有回抛出异常， Spring 正是在用这种方式来完成接口对应 的映射文件存在性验证。-->
 	<bean id="bookMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-		<property name="mapperInterface" value="com.test.jdbc.BookMapper"/>
+		<property name="mapperInterface" value="com.test.jdbc.mapper.BookMapper"/>
 		<property name="sqlSessionFactory" ref="sqlSessionFactory"/>
+	</bean>
+
+	<!--如果映射器较多的情况，可以通过MapperScannerConfigurer实现-->
+	<!--
+	MapperScannerConfigurer实现了BeanDefinitionRegistryPostProcessor
+	public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
+	if (this.processPropertyPlaceHolders) {
+	// 设置processPropertyPlaceHolders为true，允许{xxx}值的注入
+	// 因为BeanDefinitionRegistries 会在应用启动的时候调用，并且会早于 BeanFactory PostProcessors 的调 用，
+	// 这就意味着 PropertyResourceConfigurers 还没有被加载所有对于属性文件的引用将会失效。 为避免此种情况发生，
+	// 此方法手动地找出定义的 PropertyResourceConfigurers 并进行提前调用 以保证对于属性的引用可以正常工作。
+	this.processPropertyPlaceHolders();
+	}
+
+	ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
+	scanner.setAddToConfig(this.addToConfig);
+	scanner.setAnnotationClass(this.annotationClass);
+	scanner.setMarkerInterface(this.markerInterface);
+	scanner.setSqlSessionFactory(this.sqlSessionFactory);
+	scanner.setSqlSessionTemplate(this.sqlSessionTemplate);
+	scanner.setSqlSessionFactoryBeanName(this.sqlSessionFactoryBeanName);
+	scanner.setSqlSessionTemplateBeanName(this.sqlSessionTemplateBeanName);
+	scanner.setResourceLoader(this.applicationContext);
+	scanner.setBeanNameGenerator(this.nameGenerator);
+	scanner.setMapperFactoryBeanClass(this.mapperFactoryBeanClass);
+	if (StringUtils.hasText(this.lazyInitialization)) {
+	scanner.setLazyInitialization(Boolean.valueOf(this.lazyInitialization));
+	}
+
+	scanner.registerFilters();
+
+	// 扫描完成以后，会根据Mapper创建MapperFactoryBean
+	scanner.scan(StringUtils.tokenizeToStringArray(this.basePackage, ",; \t\n"));
+
+	}
+
+	// MapperScannerConfigurer是一个包扫描的配置类，其中basePackage属性是必需的，多个包时可以使用逗号隔开。
+	sqlSessionFactoryBeanName、sqlSessionTemplateBeanName二选一即可。如果都选了那么根据sqlSessionFactoryBeanName引用的SqlSessionFactory创建的SqlSession会被覆盖掉。
+	如果两个都没配置，将会根据类型自动装配，这种方式适合应用程序中只有一个SqlSessionFactory或者SqlSessionTemplat的bean存在。
+
+	-->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.test.jdbc.mapper"/>
 	</bean>
 
 </beans>

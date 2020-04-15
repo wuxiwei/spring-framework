@@ -1,9 +1,8 @@
 package com.test;
 
-import com.test.jdbc.BookMapper;
+import com.test.jdbc.mapper.BookMapper;
 import com.test.jdbc.Books;
 import com.test.jdbc.MybatisUtil;
-import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -42,8 +41,8 @@ public class JdbcTest {
 //		spring-mybatis
 		ApplicationContext bf = new ClassPathXmlApplicationContext("mybatis-spring-config.xml");
 		BookMapper bookMapper = (BookMapper) bf.getBean("bookMapper");
-		Books myBooks = new Books("3","3");
-		bookMapper.insertBook(myBooks);
+//		Books myBooks = new Books("3","3");
+//		bookMapper.insertBook(myBooks);
 		Books books = bookMapper.queryById(1);
 		System.out.println(books);
 	}
