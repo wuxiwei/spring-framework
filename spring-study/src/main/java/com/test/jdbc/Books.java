@@ -16,6 +16,11 @@ public class Books {
 
 	Date date;
 
+	public Books(String title, String author) {
+		this.title = title;
+		this.author = author;
+	}
+
 	public Books(Integer id, String title, String author, Date date) {
 		this.id = id;
 		this.title = title;

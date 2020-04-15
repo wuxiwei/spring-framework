@@ -3,6 +3,7 @@ package com.test.jdbc;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
@@ -36,7 +37,7 @@ public class BookServiceImpl implements BookService {
 
 		// spring处理方式,会把参数自动设置
 		jdbcTemplate.update("insert into books(title, author, date) values (?, ?, ?)",
-				new Object[] {books.getTitle(), books.getAuthor(), books.getDate()},
+				new Object[] {books.getTitle(), books.getAuthor(), new Date(1)},
 				new int[] {Types.VARCHAR, Types.VARCHAR, Types.DATE});
 	}
 

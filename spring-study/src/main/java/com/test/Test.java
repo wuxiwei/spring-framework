@@ -18,7 +18,6 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -53,12 +52,7 @@ public class Test {
 //		System.out.println(context.getBean("a", AImpl.class).get());
 //		System.out.println(context.getBean("b", BImpl.class).get());
 
-
-		BookService bookService = (BookService) bf.getBean("bookService");
-//		bookService.save(new Books(1, "1", "1", new Date()));
-		List<Books> books = bookService.getBooks();
-		System.out.println(books);
-
 	}
+
 
 }
