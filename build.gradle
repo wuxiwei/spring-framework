@@ -92,13 +92,13 @@ configure(allprojects) { project ->
 			 "-Xlint:divzero", "-Xlint:empty", "-Xlint:finally", "-Xlint:overrides",
 			 "-Xlint:path", "-Xlint:processing", "-Xlint:static", "-Xlint:try", "-Xlint:-options"]
 
-	compileJava.options*.compilerArgs = commonCompilerArgs +
-			["-Xlint:varargs", "-Xlint:fallthrough", "-Xlint:rawtypes",
-			 "-Xlint:deprecation", "-Xlint:unchecked"]
-
-	compileTestJava.options*.compilerArgs = commonCompilerArgs +
-			["-Xlint:-varargs", "-Xlint:-fallthrough", "-Xlint:-rawtypes",
-			 "-Xlint:-deprecation", "-Xlint:-unchecked"]
+//	compileJava.options*.compilerArgs = commonCompilerArgs +
+//			["-Xlint:varargs", "-Xlint:fallthrough", "-Xlint:rawtypes",
+//			 "-Xlint:deprecation", "-Xlint:unchecked", "-Werror"]
+//
+//	compileTestJava.options*.compilerArgs = commonCompilerArgs +
+//			["-Xlint:-varargs", "-Xlint:-fallthrough", "-Xlint:-rawtypes",
+//			 "-Xlint:-deprecation", "-Xlint:-unchecked", "-Werror"]
 
 	compileJava {
 		sourceCompatibility = 1.8  // can be switched to 11 for testing
@@ -147,8 +147,8 @@ configure(allprojects) { project ->
 	}
 
 	repositories {
+		maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
 		maven { url "https://repo.spring.io/libs-release" }
-		maven { url "http://repo.springsource.org/plugins-release"}
 		mavenLocal()
 	}
 
