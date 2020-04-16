@@ -37,6 +37,7 @@ abstract class TransactionAttributeSourcePointcut extends StaticMethodMatcherPoi
 
 	@Override
 	public boolean matches(Method method, Class<?> targetClass) {
+		// 作为事务增强的匹配
 		if (TransactionalProxy.class.isAssignableFrom(targetClass) ||
 				PlatformTransactionManager.class.isAssignableFrom(targetClass) ||
 				PersistenceExceptionTranslator.class.isAssignableFrom(targetClass)) {

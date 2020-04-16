@@ -60,6 +60,8 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	@Override
 	@Nullable
 	public BeanDefinition parse(Element element, ParserContext parserContext) {
+		// xml事务解析入口
+		// Spring的事务是以AOP为基础的，可以配置mode="aspectj"
 		registerTransactionalEventListenerFactory(parserContext);
 		String mode = element.getAttribute("mode");
 		if ("aspectj".equals(mode)) {
@@ -119,6 +121,13 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 	private static class AopAutoProxyConfigurer {
 
 		public static void configureAutoProxyCreator(Element element, ParserContext parserContext) {
+			/**
+			 * 注册InfrastructureAdvisorAutoProxyCreator
+			 * InfrastructureAdvisorAutoProxyCreator实现了SmartInstantiationAwareBeanPostProcessor，
+			 * 所以在bean在实例化过程中会调用父类AbstractAutoProxyCreator实现的postProcessAfterInitialization
+			 * 后面会把TransactionAttributeSourceAdvisor注入
+			 * 带有@Transactional的bean在实例化时会被判断为适用于事务增强。就会生成对应代理
+			 */
 			AopNamespaceUtils.registerAutoProxyCreatorIfNecessary(parserContext, element);
 
 			String txAdvisorBeanName = TransactionManagementConfigUtils.TRANSACTION_ADVISOR_BEAN_NAME;
@@ -133,6 +142,11 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				String sourceName = parserContext.getReaderContext().registerWithGeneratedName(sourceDef);
 
 				// Create the TransactionInterceptor definition.
+				// BeanFactoryTransactionAttributeSourceAdvisor 作为 Advisor 的实现类，自然要遵从 Advisor 的处理方式，
+				// 当代理被调用时会调用这个类的增强方法，也就是此 bean 的 Advise，
+				// 又因为在 解析事务定义标签时我们把 Transactionlnterceptor 类型的 bean 注入到了 BeanFactory TransactionAttributeSourceAdvisor 中，
+				// 所以，在调用事务增强器增强的代理类时会首先执行 Transactionlnterceptor 进行增强，
+				// 同时，也就是在 Transactionlnterceptor 类中的 invoke 方法中完 成了整个事务的逻辑。
 				RootBeanDefinition interceptorDef = new RootBeanDefinition(TransactionInterceptor.class);
 				interceptorDef.setSource(eleSource);
 				interceptorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
@@ -141,9 +155,12 @@ class AnnotationDrivenBeanDefinitionParser implements BeanDefinitionParser {
 				String interceptorName = parserContext.getReaderContext().registerWithGeneratedName(interceptorDef);
 
 				// Create the TransactionAttributeSourceAdvisor definition.
+				// BeanFactoryTransactionAttributeSourceAdvisor是Advisor的实现类
 				RootBeanDefinition advisorDef = new RootBeanDefinition(BeanFactoryTransactionAttributeSourceAdvisor.class);
 				advisorDef.setSource(eleSource);
 				advisorDef.setRole(BeanDefinition.ROLE_INFRASTRUCTURE);
+				// 上面两个bean被注册到advisorDef
+				// transactionAttributeSource用于解析是否适用该增强器
 				advisorDef.getPropertyValues().add("transactionAttributeSource", new RuntimeBeanReference(sourceName));
 				advisorDef.getPropertyValues().add("adviceBeanName", interceptorName);
 				if (element.hasAttribute("order")) {

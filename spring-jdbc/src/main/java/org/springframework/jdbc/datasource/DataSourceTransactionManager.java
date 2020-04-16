@@ -237,6 +237,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	protected Object doGetTransaction() {
 		DataSourceTransactionObject txObject = new DataSourceTransactionObject();
 		txObject.setSavepointAllowed(isNestedTransactionAllowed());
+		// 如果当前线程已经记录数据库连接使用原有连接
 		ConnectionHolder conHolder =
 				(ConnectionHolder) TransactionSynchronizationManager.getResource(obtainDataSource());
 		txObject.setConnectionHolder(conHolder, false);
@@ -254,6 +255,14 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 	 */
 	@Override
 	protected void doBegin(Object transaction, TransactionDefinition definition) {
+		/**
+		 * l. 尝试获取连接。 当然并不是每次都会获取新的连接， 如果当前线程中的 connectionHolder 已经存在， 则没 有必要再次获取，或者， 对于事务同步表示设置为 true 的需要重新获取连接。
+		 * 2. 设置隔离级别以及只读标识。 你是否有过这样的错觉？ 事务中的只读配置是 Spring 中做了一些处理呢？ Spring 中确实是 针对只读操作做了一些处理，但是核心的实现是设置 connection 上的 readOnly 属性。 同样，对 于隔离级别的控制也是交由 connection 去控制的。
+		 * 3. 更改默认的提交设置。 如果事务属性是自动提交， 那么需要改变这种设置，而将提交操作委托给 Spring 来处理。
+		 * 4 设置标志位，标识当前连接已经被事务激活。
+		 * 5. 设置过期时间。
+		 * 6. 将 connectionHolder 绑定到当前线程。
+		 */
 		DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
 		Connection con = null;
 
@@ -270,12 +279,14 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			txObject.getConnectionHolder().setSynchronizedWithTransaction(true);
 			con = txObject.getConnectionHolder().getConnection();
 
+			// 设置隔离级别
 			Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);
 			txObject.setPreviousIsolationLevel(previousIsolationLevel);
 
 			// Switch to manual commit if necessary. This is very expensive in some JDBC drivers,
 			// so we don't want to do it unnecessarily (for example if we've explicitly
 			// configured the connection pool to set it already).
+			// 更改自动提交，由spring控制
 			if (con.getAutoCommit()) {
 				txObject.setMustRestoreAutoCommit(true);
 				if (logger.isDebugEnabled()) {
@@ -285,6 +296,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 			}
 
 			prepareTransactionalConnection(con, definition);
+			// 设置判断当前线程是否存在事务的依据
 			txObject.getConnectionHolder().setTransactionActive(true);
 
 			int timeout = determineTimeout(definition);
@@ -294,6 +306,7 @@ public class DataSourceTransactionManager extends AbstractPlatformTransactionMan
 
 			// Bind the connection holder to the thread.
 			if (txObject.isNewConnectionHolder()) {
+				// 将当前获取到的连接绑定到当前线程
 				TransactionSynchronizationManager.bindResource(obtainDataSource(), txObject.getConnectionHolder());
 			}
 		}

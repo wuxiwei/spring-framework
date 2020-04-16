@@ -22,7 +22,7 @@ public class BookServiceImpl implements BookService {
 	}
 
 	@Override
-	public void save(Books books) {
+	public void save(Books books) throws Exception {
 		// 如果是原生的处理方式
 //		try {
 //			assert jdbcTemplate.getDataSource() != null;
@@ -39,6 +39,8 @@ public class BookServiceImpl implements BookService {
 		jdbcTemplate.update("insert into books(title, author, date) values (?, ?, ?)",
 				new Object[] {books.getTitle(), books.getAuthor(), new Date(1)},
 				new int[] {Types.VARCHAR, Types.VARCHAR, Types.DATE});
+
+		throw new Exception("save");
 	}
 
 	@Override
