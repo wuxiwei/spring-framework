@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+				http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context-2.5.xsd http://www.springframework.org/schema/aop https://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<context:component-scan base-package="com.test">
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+	<aop:aspectj-autoproxy/>
+<!--	<context:component-scan base-package="#{com.test.sp}"/>-->
+
+	<!--<bean id="a" class="com.test.impl.StudentA">-->
+		<!--<constructor-arg index="0" ref="b"></constructor-arg>-->
+	<!--</bean>-->
+	<!--<bean id="b" class="com.test.impl.StudentB">-->
+		<!--<constructor-arg index="0" ref="c"></constructor-arg>-->
+	<!--</bean>-->
+	<!--<bean id="c" class="com.test.impl.StudentC">-->
+		<!--<constructor-arg index="0" ref="a"></constructor-arg>-->
+	<!--</bean>-->
+
+	<!--jdbc测试-->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://39.108.212.167:3306/feirui-bpm-dev" />
+		<property name="username" value="root" />
+		<property name="password" value="Wfd-12345" />
+	</bean>
+
+	<bean id="bookService" class="com.test.jdbc.BookServiceImpl">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+	<!--事务-->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+
+</beans>

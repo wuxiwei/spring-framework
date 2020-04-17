@@ -35,7 +35,7 @@ public class Test {
 //		System.out.println(b.get());
 
 //		XmlBeanFactory bf = new XmlBeanFactory(new ClassPathResource("applicationContext.xml"));
-		ApplicationContext bf = new ClassPathXmlApplicationContext("applicationContext.xml");
+		ApplicationContext bf = new ClassPathXmlApplicationContext("application.xml");
 
 		A a = (A) bf.getBean("a");
 		B b = (B) bf.getBean("b");

@@ -139,6 +139,13 @@ public class ContextLoader {
 		// Load default strategy implementations from properties file.
 		// This is currently strictly internal and not meant to be customized
 		// by application developers.
+//		defaultStrategies = new Properties();
+//		defaultStrategies.setProperty("org.springframework.web.context.WebApplicationContext", "org.springframework.web.context.support.XmlWebApplicationContext");
+		// FileNotFound org/springframework/web/context/ContextLoader.properties
+		// Project Structure 处理选择Modules-》spring-web-》Dependencies-》点击+号-》点击JARS or directories-》在弹出的对话框中选到自己工程下面的resources文件夹，点击OK-》弹出的对话框中选择Classes，点击OK-》这时在Project Structure页面中的Dependencies中即可看到我们添加的resources文件夹，点击OK。
+		// 再次打开File->Project Structure：
+		//选择Artifacts即可在9那里看到刚刚添加的resources文件夹，且10那里classes文件夹下并没有resources文件夹   -》双击9位置的resources文件夹，随后可以见到11位置处出现了resources文件夹，然后点击apply，ok即可。
+		// https://blog.csdn.net/sinat_38301574/article/details/80465693
 		try {
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, ContextLoader.class);
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
