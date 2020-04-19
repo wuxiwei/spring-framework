@@ -1,5 +1,7 @@
 package com.test.controller;
 
+import com.test.aop.ITestBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,8 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 @RestController
 public class BookController {
 
+	@Autowired
+	private ITestBean testBean;
+
 	@GetMapping("hello")
 	public String getBook(HttpServletRequest request, HttpServletResponse response) {
+		testBean.test();
 		return "hello";
 	}
 

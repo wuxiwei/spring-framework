@@ -500,14 +500,27 @@ public class DispatcherServlet extends FrameworkServlet {
 	 * <p>May be overridden in subclasses in order to initialize further strategy objects.
 	 */
 	protected void initStrategies(ApplicationContext context) {
+		// 正在初始化webmvc相关配置
+		//初始化多部请求解析器，没有默认的实现
 		initMultipartResolver(context);
+		//初始化地域解析器，默认实现是AcceptHeaderLocaleResolver
+		// 本地解析
 		initLocaleResolver(context);
+		//初始化主题解析器，默认实现是FixedThemeResolver
 		initThemeResolver(context);
+		//初始化处理器映射，这是个集合， 默认实现是BeanNameUrlHandlerMapping和DefaultAnnotationHandlerMapping
+		// URL请求映射
 		initHandlerMappings(context);
+		//初始化处理器适配器，这是个集合，默认实现是HttpRequestHandlerAdapter，
+		// 初始化Controller类
 		initHandlerAdapters(context);
+		//初始化处理器异常解析器，这是个集合，默认实现是
 		initHandlerExceptionResolvers(context);
+		//初始化请求到视图名解析器，默认实现是DefaultRequestToViewNameTranslator
 		initRequestToViewNameTranslator(context);
+		//初始化视图解析器，这是个集合，默认实现是InternalResourceViewResolver
 		initViewResolvers(context);
+		// 初始化FlashMapManager
 		initFlashMapManager(context);
 	}
 
@@ -593,19 +606,25 @@ public class DispatcherServlet extends FrameworkServlet {
 	private void initHandlerMappings(ApplicationContext context) {
 		this.handlerMappings = null;
 
+		// detectAllHandlerMappings默认为true，可通过DispatcherServlet的init-param参数进行设置
 		if (this.detectAllHandlerMappings) {
 			// Find all HandlerMappings in the ApplicationContext, including ancestor contexts.
+			// 在ApplicationContext中找到所有的handlerMapping，包括父上下文。
 			Map<String, HandlerMapping> matchingBeans =
 					BeanFactoryUtils.beansOfTypeIncludingAncestors(context, HandlerMapping.class, true, false);
 			if (!matchingBeans.isEmpty()) {
 				this.handlerMappings = new ArrayList<>(matchingBeans.values());
 				// We keep HandlerMappings in sorted order.
+				// 对handlerMapping排序，可通过指定order属性进行设置，order的值为int型，数越小优先级越高
 				AnnotationAwareOrderComparator.sort(this.handlerMappings);
 			}
 		}
+		// detectAllHandlerMappings=false时
 		else {
 			try {
+				// 从ApplicationContext上下文中取id（或name）="handlerMapping"的bean
 				HandlerMapping hm = context.getBean(HANDLER_MAPPING_BEAN_NAME, HandlerMapping.class);
+				// 将hm转换成list，并赋值给属性handlerMappings
 				this.handlerMappings = Collections.singletonList(hm);
 			}
 			catch (NoSuchBeanDefinitionException ex) {
@@ -613,8 +632,12 @@ public class DispatcherServlet extends FrameworkServlet {
 			}
 		}
 
+		// @Controller需要在后面实现
 		// Ensure we have at least one HandlerMapping, by registering
 		// a default HandlerMapping if no other mappings are found.
+		// 从context上下文中定义HandlerMapping时，Spring MVC将使用默认HandlerMapping，默认的HandlerMapping在DispatcherServlet.properties属性文件中定义，
+		// 该文件是在DispatcherServlet的static静态代码块中加载的
+		// 默认的是：BeanNameUrlHandlerMapping和RequestMappingHandlerMapping
 		if (this.handlerMappings == null) {
 			this.handlerMappings = getDefaultStrategies(context, HandlerMapping.class);
 			if (logger.isTraceEnabled()) {
@@ -940,6 +963,7 @@ public class DispatcherServlet extends FrameworkServlet {
 		}
 
 		try {
+			// 以上都是准备工作，继续看doDispatch
 			doDispatch(request, response);
 		}
 		finally {
@@ -1009,34 +1033,41 @@ public class DispatcherServlet extends FrameworkServlet {
 			Exception dispatchException = null;
 
 			try {
+				// 如果是multipart文件类型请求，则转换为multipartHttpServletRequest类型的request
 				processedRequest = checkMultipart(request);
 				multipartRequestParsed = (processedRequest != request);
 
 				// Determine handler for the current request.
+				// 根据request信息寻找对于的Handler
 				mappedHandler = getHandler(processedRequest);
 				if (mappedHandler == null) {
+					// 如果没有找到
 					noHandlerFound(processedRequest, response);
 					return;
 				}
 
 				// Determine handler adapter for the current request.
+				// 根据当前的Handler寻找对应的adapter
 				HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
 
 				// Process last-modified header, if supported by the handler.
 				String method = request.getMethod();
 				boolean isGet = "GET".equals(method);
 				if (isGet || "HEAD".equals(method)) {
+					// 如果当前handler支持
 					long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
 					if (new ServletWebRequest(request, response).checkNotModified(lastModified) && isGet) {
 						return;
 					}
 				}
 
+				// 拦截器perHandler处理
 				if (!mappedHandler.applyPreHandle(processedRequest, response)) {
 					return;
 				}
 
 				// Actually invoke the handler.
+				// 正真处理请求
 				mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 
 				if (asyncManager.isConcurrentHandlingStarted()) {
@@ -1044,6 +1075,8 @@ public class DispatcherServlet extends FrameworkServlet {
 				}
 
 				applyDefaultViewName(processedRequest, mv);
+
+				// 应用所有拦截器postHandle方法
 				mappedHandler.applyPostHandle(processedRequest, response, mv);
 			}
 			catch (Exception ex) {

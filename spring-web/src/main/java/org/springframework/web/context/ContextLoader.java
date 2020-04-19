@@ -147,6 +147,7 @@ public class ContextLoader {
 		//选择Artifacts即可在9那里看到刚刚添加的resources文件夹，且10那里classes文件夹下并没有resources文件夹   -》双击9位置的resources文件夹，随后可以见到11位置处出现了resources文件夹，然后点击apply，ok即可。
 		// https://blog.csdn.net/sinat_38301574/article/details/80465693
 		try {
+			// 获取XmlWebApplicationContext
 			ClassPathResource resource = new ClassPathResource(DEFAULT_STRATEGIES_PATH, ContextLoader.class);
 			defaultStrategies = PropertiesLoaderUtils.loadProperties(resource);
 		}
@@ -283,6 +284,7 @@ public class ContextLoader {
 			// Store context in local instance variable, to guarantee that
 			// it is available on ServletContext shutdown.
 			if (this.context == null) {
+				// 初始化context
 				this.context = createWebApplicationContext(servletContext);
 			}
 			if (this.context instanceof ConfigurableWebApplicationContext) {
@@ -296,9 +298,11 @@ public class ContextLoader {
 						ApplicationContext parent = loadParentContext(servletContext);
 						cwac.setParent(parent);
 					}
+					// 真正初始化入口
 					configureAndRefreshWebApplicationContext(cwac, servletContext);
 				}
 			}
+			// 记录在servletContext中
 			servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, this.context);
 
 			ClassLoader ccl = Thread.currentThread().getContextClassLoader();
@@ -336,11 +340,15 @@ public class ContextLoader {
 	 * @see ConfigurableWebApplicationContext
 	 */
 	protected WebApplicationContext createWebApplicationContext(ServletContext sc) {
+		// 获取上下文类
 		Class<?> contextClass = determineContextClass(sc);
+		//如果该上下文类没有实现ConfigurableWebApplicationContext接口则抛出异常
 		if (!ConfigurableWebApplicationContext.class.isAssignableFrom(contextClass)) {
 			throw new ApplicationContextException("Custom context class [" + contextClass.getName() +
 					"] is not of type [" + ConfigurableWebApplicationContext.class.getName() + "]");
 		}
+		// BeanUtils使用instantiateClass初始化对象注意：必须保证初始化类必须有public默认无参数构造器，注意初始化内部类时，内部类必须是静态的，否则报错！
+		// 返回该上下文类的实例，调用BeanUtils.instantiateClass(contextClass)，通过反射，调用XmlWebApplicationContext的无参构造函数实例化XmlWebApplicationContext对象
 		return (ConfigurableWebApplicationContext) BeanUtils.instantiateClass(contextClass);
 	}
 
@@ -364,6 +372,7 @@ public class ContextLoader {
 			}
 		}
 		else {
+			// 获取到XmlWebApplicationContext
 			contextClassName = defaultStrategies.getProperty(WebApplicationContext.class.getName());
 			try {
 				return ClassUtils.forName(contextClassName, ContextLoader.class.getClassLoader());
@@ -405,6 +414,7 @@ public class ContextLoader {
 		}
 
 		customizeContext(sc, wac);
+		// refresh
 		wac.refresh();
 	}
 

@@ -17,11 +17,16 @@
     <servlet>
         <servlet-name>spring_study</servlet-name>
 		<!--：包含了 SpringMVC 的请求逻辑， Spring 使用此类拦截 Web 请求并 进行相应的逻辑处理。-->
+<!--		org.springframework.web.servlet.FrameworkServlet.initWebApplicationContext 衔接前面ContextLoaderListener创建的context，补充内容-->
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath:spring-mvc.xml</param-value>
         </init-param>
+<!--		<init-param>-->
+<!--			<param-name>detectAllHandlerMappings</param-name>-->
+<!--			<param-value>false</param-value>-->
+<!--		</init-param>-->
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet-mapping>
@@ -34,4 +39,9 @@
 	<listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
+
+
+<!--	DispatcherServlet一般会加载MVC相关的bean配置管理(如: ViewResolver, Controller, MultipartResolver, ExceptionHandler, etc.)-->
+<!--	ContextLoaderListener一般会加载整个Spring容器相关的bean配置管理(如: Log, Service, Dao, PropertiesLoader, DataSource Bean, etc.)-->
+
 </web-app>

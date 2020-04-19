@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:context="http://www.springframework.org/schema/context"
-	   xmlns="http://www.springframework.org/schema/beans"
+	   xmlns="http://www.springframework.org/schema/beans" xmlns:mvc="http://www.springframework.org/schema/mvc"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/mvc https://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="com.test.controller">
         <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
+
+<!--	正常情况需要以下注解，才能注入RequestMappingHandlerMapping，处理@Controller注解，但是目前版本在DispatcherServlet初始化时取得-->
+<!--	DispatcherServlet.properties文件中，默认org.springframework.web.servlet.HandlerMapping=org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping已经包含RequestMappingHandlerMapping，也就可以省略了。-->
+<!--	<mvc:annotation-driven />-->
+
 
     <!--<mvc:interceptors>-->
         <!--<mvc:interceptor>-->
@@ -16,6 +21,18 @@
             <!--<bean class=""/>-->
         <!--</mvc:interceptor>-->
     <!--</mvc:interceptors>-->
+
+	<!-- 定义映射处理器 -->
+<!--	<bean id="handlerMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">-->
+<!--		<property name="urlMap">-->
+<!--			<props>-->
+<!--				<prop key="/demo">demoController</prop>-->
+<!--			</props>-->
+<!--		</property>-->
+<!--		&lt;!&ndash; 设置顺序，在多个映射处理器时用于排序，可不设置 &ndash;&gt;-->
+<!--		<property name="order" value="1"/>-->
+<!--	</bean>-->
+<!--	<bean id="demoController" class="com.test.controller.SimpleBookController"/>-->
 
 
     <!-- configure the InternalResourceViewResolver -->
