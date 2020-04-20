@@ -4,6 +4,7 @@ import com.test.aop.ITestBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ public class BookController {
 	private ITestBean testBean;
 
 	@GetMapping("hello")
+	@ResponseBody
 	public String getBook(HttpServletRequest request, HttpServletResponse response) {
 		testBean.test();
 		return "hello";

@@ -82,6 +82,8 @@ import static org.springframework.context.annotation.AnnotationConfigUtils.CONFI
  * @author Juergen Hoeller
  * @author Phillip Webb
  * @since 3.0
+ * ConfigurationClassPostProcessor是一个BeanFactory的后置处理器，因此它的主要功能是参与BeanFactory的建造，
+ * 在这个类中，会解析加了@Configuration的配置类，还会解析@ComponentScan、@ComponentScans注解扫描的包，以及解析@Import等注解。
  */
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
 		PriorityOrdered, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {

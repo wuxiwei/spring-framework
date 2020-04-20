@@ -424,6 +424,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 		}
 
 		if (CorsUtils.isCorsRequest(request)) {
+			// 如果是预请求，Option请求
 			CorsConfiguration globalConfig = this.corsConfigurationSource.getCorsConfiguration(request);
 			CorsConfiguration handlerConfig = getCorsConfiguration(handler, request);
 			CorsConfiguration config = (globalConfig != null ? globalConfig.combine(handlerConfig) : handlerConfig);
@@ -477,6 +478,7 @@ public abstract class AbstractHandlerMapping extends WebApplicationObjectSupport
 				(HandlerExecutionChain) handler : new HandlerExecutionChain(handler));
 
 		String lookupPath = this.urlPathHelper.getLookupPathForRequest(request);
+		// 添加拦截器
 		for (HandlerInterceptor interceptor : this.adaptedInterceptors) {
 			if (interceptor instanceof MappedInterceptor) {
 				MappedInterceptor mappedInterceptor = (MappedInterceptor) interceptor;

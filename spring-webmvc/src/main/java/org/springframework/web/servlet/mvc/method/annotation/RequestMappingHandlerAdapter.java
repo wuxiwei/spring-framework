@@ -735,6 +735,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 
 		// Annotation-based return value types
 		handlers.add(new ModelAttributeMethodProcessor(false));
+		//@Request/ResponseBody注解处理器
 		handlers.add(new RequestResponseBodyMethodProcessor(getMessageConverters(),
 				this.contentNegotiationManager, this.requestResponseBodyAdvice));
 
@@ -854,12 +855,12 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 		try {
 			WebDataBinderFactory binderFactory = getDataBinderFactory(handlerMethod);
 			ModelFactory modelFactory = getModelFactory(handlerMethod, binderFactory);
-
+			//创建方法调用对象
 			ServletInvocableHandlerMethod invocableMethod = createInvocableHandlerMethod(handlerMethod);
 			if (this.argumentResolvers != null) {
 				invocableMethod.setHandlerMethodArgumentResolvers(this.argumentResolvers);
 			}
-			if (this.returnValueHandlers != null) {
+			if (this.returnValueHandlers != null) {	//设置返回值处理器
 				invocableMethod.setHandlerMethodReturnValueHandlers(this.returnValueHandlers);
 			}
 			invocableMethod.setDataBinderFactory(binderFactory);
@@ -889,7 +890,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 				});
 				invocableMethod = invocableMethod.wrapConcurrentResult(result);
 			}
-
+			//执行Controller中的RequestMapping注释的方法
 			invocableMethod.invokeAndHandle(webRequest, mavContainer);
 			if (asyncManager.isConcurrentHandlingStarted()) {
 				return null;
@@ -1000,6 +1001,7 @@ public class RequestMappingHandlerAdapter extends AbstractHandlerMethodAdapter
 			ModelFactory modelFactory, NativeWebRequest webRequest) throws Exception {
 
 		modelFactory.updateModel(webRequest, mavContainer);
+		// 直接跳过 @ResponseBody
 		if (mavContainer.isRequestHandled()) {
 			return null;
 		}
