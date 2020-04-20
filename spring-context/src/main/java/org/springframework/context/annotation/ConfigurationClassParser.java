@@ -182,9 +182,15 @@ class ConfigurationClassParser {
 			}
 		}
 
+		/**
+		 * 那么deferredImportSelectors上挂载的DefferedImportSelector类是何时处理的呢？
+		 * doProcessConfigurationClass() 方法被processConfigurationClass() 调用，而processConfigurationClass() 被parse() 调用。
+		 * 可以看到在处理完所有的普通ImportSelector类后，即嵌套载入需要的被Import的类的实例之后，再统一处理DefferedImportSelector类。
+		 */
 		this.deferredImportSelectorHandler.process();
 	}
 
+	// 调用对应不同BeanDefinition类型的parse() 方法
 	protected final void parse(@Nullable String className, String beanName) throws IOException {
 		Assert.notNull(className, "No bean class name for configuration class bean definition");
 		MetadataReader reader = this.metadataReaderFactory.getMetadataReader(className);
@@ -239,6 +245,7 @@ class ConfigurationClassParser {
 		// Recursively process the configuration class and its superclass hierarchy.
 		SourceClass sourceClass = asSourceClass(configClass);
 		do {
+			// 调用上述context.annotation.ConfigurationClassParser.doProcessConfigurationClass()方法处理ConfigurationClass
 			sourceClass = doProcessConfigurationClass(configClass, sourceClass);
 		}
 		while (sourceClass != null);
@@ -299,6 +306,9 @@ class ConfigurationClassParser {
 		}
 
 		// Process any @Import annotations
+		// 调用processImports()方法来处理所有@Import注解
+		// getImports()方法嵌套的遍历了sourceClass的注解，搜集所有@Import注解的值，即被Import的类名集合。
+		// processImports() 的第一个参数configClass，是上层函数processConfigurationClass()的唯一参数，即被处理的Configuration类。第二个参数currentSourceClass是configClass的SourceClass类封装。第三个参数是嵌套遍历出的所有需要被Import的类。第四个参数指定是否检查循环import。
 		processImports(configClass, sourceClass, getImports(sourceClass), true);
 
 		// Process any @ImportResource annotations
@@ -554,12 +564,16 @@ class ConfigurationClassParser {
 			try {
 				for (SourceClass candidate : importCandidates) {
 					if (candidate.isAssignable(ImportSelector.class)) {
+						// 如果candidate（即被@Import的类）是ImportSelector的子类
 						// Candidate class is an ImportSelector -> delegate to it to determine imports
 						Class<?> candidateClass = candidate.loadClass();
+						// 生成candidate class（一个ImportSelector子类）的实例
 						ImportSelector selector = BeanUtils.instantiateClass(candidateClass, ImportSelector.class);
 						ParserStrategyUtils.invokeAwareMethods(
 								selector, this.environment, this.resourceLoader, this.registry);
 						if (selector instanceof DeferredImportSelector) {
+							// DeferredImportSelector是一种特殊的ImportSelector，这里单独处理
+							// 挂到deferredImportSelectors列表上
 							this.deferredImportSelectorHandler.handle(configClass, (DeferredImportSelector) selector);
 						}
 						else {
@@ -749,12 +763,14 @@ class ConfigurationClassParser {
 		 */
 		public void handle(ConfigurationClass configClass, DeferredImportSelector importSelector) {
 			DeferredImportSelectorHolder holder = new DeferredImportSelectorHolder(configClass, importSelector);
+			// deferredImportSelectors已被初始化为ArrayList<>()，因此全部走else分支。
 			if (this.deferredImportSelectors == null) {
 				DeferredImportSelectorGroupingHandler handler = new DeferredImportSelectorGroupingHandler();
 				handler.register(holder);
 				handler.processGroupImports();
 			}
 			else {
+				// 所有的DeferredImportSelector类实例都挂到deferredImportSelectors列表上
 				this.deferredImportSelectors.add(holder);
 			}
 		}
@@ -766,7 +782,9 @@ class ConfigurationClassParser {
 				if (deferredImports != null) {
 					DeferredImportSelectorGroupingHandler handler = new DeferredImportSelectorGroupingHandler();
 					deferredImports.sort(DEFERRED_IMPORT_COMPARATOR);
+					// 添加到handler的configurationClasses列表中
 					deferredImports.forEach(handler::register);
+					// // 对handler中每个grouping的每个configClass，调用processImports()
 					handler.processGroupImports();
 				}
 			}
@@ -795,6 +813,7 @@ class ConfigurationClassParser {
 
 		public void processGroupImports() {
 			for (DeferredImportSelectorGrouping grouping : this.groupings.values()) {
+				// springboot基于此
 				grouping.getImports().forEach(entry -> {
 					ConfigurationClass configurationClass = this.configurationClasses.get(entry.getMetadata());
 					try {
