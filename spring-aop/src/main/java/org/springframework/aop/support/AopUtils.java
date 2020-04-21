@@ -278,6 +278,7 @@ public abstract class AopUtils {
 	 * @param hasIntroductions whether or not the advisor chain for this bean includes
 	 * any introductions
 	 * @return whether the pointcut can apply on any method
+	 * 校验符合条件的增强器
 	 */
 	public static boolean canApply(Advisor advisor, Class<?> targetClass, boolean hasIntroductions) {
 		if (advisor instanceof IntroductionAdvisor) {

@@ -65,6 +65,8 @@ import org.springframework.util.comparator.InstanceComparator;
  * @author Ramnivas Laddad
  * @author Phillip Webb
  * @since 2.0
+ *
+ * advisorFactory
  */
 @SuppressWarnings("serial")
 public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFactory implements Serializable {
@@ -161,6 +163,7 @@ public class ReflectiveAspectJAdvisorFactory extends AbstractAspectJAdvisorFacto
 				methods.add(method);
 			}
 		});
+		// 这个排序很重要
 		methods.sort(METHOD_COMPARATOR);
 		return methods;
 	}

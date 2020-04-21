@@ -89,7 +89,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 				if (aspectNames == null) {
 					List<Advisor> advisors = new ArrayList<>();
 					aspectNames = new ArrayList<>();
-					// 获取所有beanName
+					// 获取所有beanName, beanDefinitionNames
 					String[] beanNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(
 							this.beanFactory, Object.class, true, false);
 					for (String beanName : beanNames) {
@@ -113,9 +113,11 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 										new BeanFactoryAspectInstanceFactory(this.beanFactory, beanName);
 								// 解析标记AspectJ注解中的增强方法
 								List<Advisor> classAdvisors = this.advisorFactory.getAdvisors(factory);
+								// 单例情况
 								if (this.beanFactory.isSingleton(beanName)) {
 									this.advisorsCache.put(beanName, classAdvisors);
 								}
+								// 非单例
 								else {
 									this.aspectFactoryCache.put(beanName, factory);
 								}
@@ -150,6 +152,7 @@ public class BeanFactoryAspectJAdvisorsBuilder {
 				advisors.addAll(cachedAdvisors);
 			}
 			else {
+				// 非单例
 				MetadataAwareAspectInstanceFactory factory = this.aspectFactoryCache.get(aspectName);
 				// Advisor 的提取
 				advisors.addAll(this.advisorFactory.getAdvisors(factory));

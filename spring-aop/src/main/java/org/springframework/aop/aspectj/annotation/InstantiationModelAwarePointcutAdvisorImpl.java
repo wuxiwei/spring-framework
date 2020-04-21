@@ -40,6 +40,8 @@ import org.springframework.lang.Nullable;
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @since 2.0
+ *
+ * 增强器的封装
  */
 @SuppressWarnings("serial")
 final class InstantiationModelAwarePointcutAdvisorImpl
@@ -91,6 +93,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 		this.aspectJAdviceMethod = aspectJAdviceMethod;
 		this.aspectJAdvisorFactory = aspectJAdvisorFactory;
 		this.aspectInstanceFactory = aspectInstanceFactory;
+		// 这个排序很重要
 		this.declarationOrder = declarationOrder;
 		this.aspectName = aspectName;
 
@@ -111,6 +114,7 @@ final class InstantiationModelAwarePointcutAdvisorImpl
 			this.pointcut = this.declaredPointcut;
 			this.lazy = false;
 			// 根据注解中的信息初始化对应的增强器在instantiateAdvice中实现
+			// 根据不同类型返回增强器
 			this.instantiatedAdvice = instantiateAdvice(this.declaredPointcut);
 		}
 	}

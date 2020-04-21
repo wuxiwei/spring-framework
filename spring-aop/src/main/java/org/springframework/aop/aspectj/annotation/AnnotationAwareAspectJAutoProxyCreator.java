@@ -120,10 +120,13 @@ public class AnnotationAwareAspectJAutoProxyCreator extends AspectJAwareAdvisorA
 	 * then one of the patterns must match.
 	 */
 	protected boolean isEligibleAspectBean(String beanName) {
+		//可以看到，如果没有在xml中通过配置指定增强器，则
+		//加载所有的@Aspect增强器。不进行过滤
 		if (this.includePatterns == null) {
 			return true;
 		}
 		else {
+			//如果在xml文件中使用了定义的增强器，则优先使用include进来的aspect
 			for (Pattern pattern : this.includePatterns) {
 				if (pattern.matcher(beanName).matches()) {
 					return true;
