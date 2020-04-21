@@ -84,6 +84,10 @@ import static org.springframework.context.annotation.AnnotationConfigUtils.CONFI
  * @since 3.0
  * ConfigurationClassPostProcessor是一个BeanFactory的后置处理器，因此它的主要功能是参与BeanFactory的建造，
  * 在这个类中，会解析加了@Configuration的配置类，还会解析@ComponentScan、@ComponentScans注解扫描的包，以及解析@Import等注解。
+ *
+ * 非Springboot的Sping应用，当在配置文件中使用<context:annotation-config/>或者 <context:component-scan/>时，该BeanFactoryPostProcessor会被注册。
+ * Springboot 应用中在ApplicationContext对象创建时，会在应用上下文类(参考AnnotationConfigServletWebServerApplicationContext/AnnotationConfigReactiveWebServerApplicationContext)的构造函数中创建AnnotatedBeanDefinitionReader对象时调用
+ * AnnotationConfigUtils.registerAnnotationConfigProcessors() 注册这个BeanFactoryPostProcessor到容器。
  */
 public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPostProcessor,
 		PriorityOrdered, ResourceLoaderAware, BeanClassLoaderAware, EnvironmentAware {
@@ -314,6 +318,7 @@ public class ConfigurationClassPostProcessor implements BeanDefinitionRegistryPo
 		Set<BeanDefinitionHolder> candidates = new LinkedHashSet<>(configCandidates);
 		Set<ConfigurationClass> alreadyParsed = new HashSet<>(configCandidates.size());
 		do {
+			// 开始扫描
 			parser.parse(candidates);
 			parser.validate();
 
